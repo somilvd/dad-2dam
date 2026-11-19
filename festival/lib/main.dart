@@ -1,77 +1,67 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
-void main() => runApp(const FestivalApp());
+void main() => runApp(const MaterialApp(home: PantallaCompra()));
 
-class FestivalApp extends StatelessWidget {
-  const FestivalApp({super.key});
+class PantallaCompra extends StatefulWidget {
+  const PantallaCompra({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(home: PantallaCartel());
-  }
+  State<PantallaCompra> createState() => _PantallaCompraState();
 }
 
-class PantallaCartel extends StatelessWidget {
-  const PantallaCartel({super.key});
+class _PantallaCompraState extends State<PantallaCompra> {
+  static const double precio = 25;
+  int cantidad = 0;
+  bool comprado = false;
 
   @override
   Widget build(BuildContext context) {
-    const TarjetaArtista(
-      hora: 'Hora por confirmar',
-      destacado: false,
-      nombre: '',
-      escenario: '',
-    );
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Festival Sonora')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          TarjetaArtista(
-            nombre: 'Luna Norte',
-            escenario: 'Mar',
-            hora: '22:30',
-            destacado: true,
-          ),
-          TarjetaArtista(
-            nombre: 'Los Alisios',
-            escenario: 'Volcán',
-            hora: '20:00',
-          ),
-          TarjetaArtista(nombre: 'Dúo Malpaís', escenario: 'Mar'),
-        ],
+      appBar: AppBar(title: const Text('Entradas Sonora')),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SelectorEntradas(cantidad: cantidad, onCambio: (nuevo) {setState(() {
+              cantidad = nuevo;
+            });}, onComprar: () {setState(() {
+              comprado = true;
+            });},),
+            Text('Total: ${cantidad * precio} €'),
+            if (comprado) const Text('¡Entradas compradas!'),
+          ],
+        ),
       ),
     );
   }
 }
 
-class TarjetaArtista extends StatelessWidget {
-  final String nombre;
-  final String escenario;
-  final String hora;
-  final bool destacado;
+class SelectorEntradas extends StatelessWidget {
+  final int cantidad;
+  final Function(int) onCambio;
+  final VoidCallback onComprar;
+  const SelectorEntradas({super.key, required this.cantidad, required this.onCambio, required this.onComprar});
 
-  const TarjetaArtista({
-    super.key,
-    required this.nombre,
-    required this.escenario,
-    this.hora = 'Hora por confirmar',
-    this.destacado = false,
-  });
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: destacado ? Colors.amber.shade100 : null,
-      child: ListTile(
-        leading: Icon(
-          destacado ? Icons.star : Icons.music_note,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.remove),
+          onPressed: () {
+            if(cantidad > 0) {
+              onCambio(cantidad - 1);
+            }
+          },
         ),
-        title: Text(nombre),
-        subtitle: Text('$escenario - $hora'),
-      ),
+        Text('$cantidad'),
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () {onCambio(cantidad + 1);},
+        ),
+        ElevatedButton(onPressed: () {onComprar();}, child: const Text('Comprar')),
+      ],
     );
   }
 }
