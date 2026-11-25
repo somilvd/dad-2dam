@@ -8,23 +8,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:gremio/ejecicio2.dart';
+import 'package:gremio/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Prueba que espera encontrar el texto Vida: 40/100', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: MarcadorVida(vida: 40, onCurar: (_) {})),
+      ));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Vida 40/100'), findsOneWidget);
+    
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  //Test 2
+  testWidgets('Prueba que espera encontrar el texto Vida: 40/100', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: MarcadorVida(vida: 40, onCurar: (_) {})),
+      ));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Vida 40/100'), findsOneWidget);
+    
   });
 }
